@@ -5,7 +5,7 @@ part of "../cli.dart";
 class Options {
 
   /// Creates a new options object.
-  Options({this.help, this.rest, this.version});
+  Options({required this.help, required this.rest, required this.version});
 
   /// Value indicating whether to output usage information.
   @CliOption(abbr: "h", help: "Output usage information.", negatable: false)

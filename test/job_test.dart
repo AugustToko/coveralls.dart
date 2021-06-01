@@ -28,10 +28,10 @@ void main() => group("Job", () {
 			expect(job.repoToken, "yYPv4mMlfjKgUK0rJPgN0AwNXhfzXpVwt");
 
 			expect(job.git, isNotNull);
-			expect(job.git.branch, "develop");
+			expect(job.git?.branch, "develop");
 
 			expect(job.runAt, isNotNull);
-			expect(job.runAt.toIso8601String(), "2017-01-29T02:43:30.000Z");
+			expect(job.runAt?.toIso8601String(), "2017-01-29T02:43:30.000Z");
 
 			expect(job.sourceFiles, hasLength(1));
 			expect(job.sourceFiles.first, isNotNull);

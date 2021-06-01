@@ -4,8 +4,6 @@
 Send [LCOV](http://ltp.sourceforge.net/coverage/lcov.php) and [Clover](https://www.atlassian.com/software/clover) coverage reports
 to the [Coveralls](https://coveralls.io) service, in [Dart](https://dart.dev).
 
-> WARNING: this package is **abandoned** and no longer maintained.
-
 ## Documentation
 - [User guide](https://cedx.github.io/coveralls.dart)
 - [API reference](https://pub.dev/documentation/coveralls)

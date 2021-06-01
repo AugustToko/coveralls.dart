@@ -9,11 +9,11 @@ Future<Job> parseReport(String report) async {
 	final sourceFiles = <SourceFile>[];
 	for (final record in Report.fromCoverage(report).records) {
 		final source = await File(record.sourceFile).readAsString();
-		final lineCoverage = List<int>(source.split(RegExp(r"\r?\n")).length);
-		if (record.lines != null) for (final lineData in record.lines.data) lineCoverage[lineData.lineNumber - 1] = lineData.executionCount;
+		final lineCoverage = List<int?>.generate(source.split(RegExp(r"\r?\n")).length, (index) => null);
+		if (record.lines != null) for (final lineData in record.lines?.data ?? []) lineCoverage[lineData.lineNumber - 1] = lineData.executionCount;
 
 		final branchCoverage = <int>[];
-		if (record.branches != null) for (final branchData in record.branches.data) branchCoverage.addAll(<int>[
+		if (record.branches != null) for (final branchData in record.branches?.data ?? []) branchCoverage.addAll(<int>[
 			branchData.lineNumber,
 			branchData.blockNumber,
 			branchData.branchNumber,

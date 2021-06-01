@@ -16,12 +16,16 @@ Future<Job> parseReport(String report) async {
 		if (sourceFile == null || sourceFile.isEmpty) throw FormatException("Invalid file data: ${file.toXmlString()}", report);
 
 		final source = await File(sourceFile).readAsString();
-		final coverage = List<int>(source.split(RegExp(r"\r?\n")).length);
+		final coverage = List<int?>.generate(source.split(RegExp(r"\r?\n")).length, (index) => null);
 
 		for (final line in file.findAllElements("line")) {
 			if (line.getAttribute("type") != "stmt") continue;
-			final lineNumber = int.parse(line.getAttribute("num"), radix: 10);
-			coverage[lineNumber - 1] = int.parse(line.getAttribute("count"), radix: 10);
+			final num = line.getAttribute("num");
+			final count = line.getAttribute("count");
+			if (num == null) throw Exception();
+			if (count == null) throw Exception();
+			final lineNumber = int.parse(num, radix: 10);
+			coverage[lineNumber - 1] = int.parse(count, radix: 10);
 		}
 
 		final filename = p.isAbsolute(sourceFile) ? p.relative(sourceFile) : p.normalize(sourceFile);

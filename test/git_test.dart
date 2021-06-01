@@ -71,7 +71,7 @@ void main() => group("GitCommit", () {
 				expect(data.branch, "develop");
 
 				expect(data.commit, isNotNull);
-				expect(data.commit.id, "2ef7bde608ce5404e97d5f042f95f89f1c232871");
+				expect(data.commit?.id, "2ef7bde608ce5404e97d5f042f95f89f1c232871");
 
 				expect(data.remotes, hasLength(1));
 				expect(data.remotes.first, isNotNull);
@@ -85,7 +85,7 @@ void main() => group("GitCommit", () {
 				expect(data.branch, isNotEmpty);
 
 				expect(data.commit, isNotNull);
-				expect(data.commit.id, matches(RegExp(r"^[a-f\d]{40}$")));
+				expect(data.commit?.id, matches(RegExp(r"^[a-f\d]{40}$")));
 
 				expect(data.remotes, isNotEmpty);
 				expect(data.remotes.first, isNotNull);

@@ -4,7 +4,7 @@ part of "../io.dart";
 class Client {
 
 	/// Creates a new client.
-	Client([Uri endPoint]): endPoint = endPoint ?? defaultEndPoint;
+	Client([Uri? endPoint]): endPoint = endPoint ?? defaultEndPoint;
 
 	/// The URL of the default API end point.
 	static final Uri defaultEndPoint = Uri.https("coveralls.io", "/api/v1/");
@@ -28,10 +28,10 @@ class Client {
 	/// A [config] object provides the environment settings.
 	///
 	/// Completes with a [FormatException] if the format of the specified coverage report is not supported.
-	Future<void> upload(String coverage, [Configuration config]) async {
+	Future<void> upload(String coverage, [Configuration? config]) async {
 		assert(coverage.isNotEmpty);
 
-		Job job;
+		Job? job;
 		final report = coverage.trim();
 		if (report.startsWith("<?xml") || report.startsWith("<coverage")) {
 			await clover.loadLibrary();
@@ -49,8 +49,8 @@ class Client {
 		try {
 			await where("git");
 			final git = await GitData.fromRepository();
-			final branch = job.git != null ? job.git.branch : "";
-			if (git.branch == "HEAD" && branch.isNotEmpty) git.branch = branch;
+			final branch = job.git != null ? job.git?.branch : "";
+			if (git.branch == "HEAD" && branch != null && branch.isNotEmpty) git.branch = branch;
 			job.git = git;
 		}
 
@@ -75,7 +75,7 @@ class Client {
 			_onResponse.add(response);
 
 			if ((response.statusCode ~/ 100) != 2) throw http.ClientException(response.body, request.url);
-			return response.body;
+			// return response?.body;
 		}
 
 		on Exception catch (err) {
@@ -94,7 +94,7 @@ class Client {
 		else if (config.containsKey("repo_secret_token")) job.repoToken = config["repo_secret_token"];
 
 		if (config.containsKey("parallel")) job.isParallel = config["parallel"] == "true";
-		if (config.containsKey("run_at")) job.runAt = DateTime.parse(config["run_at"]);
+		if (config.containsKey("run_at")) job.runAt = DateTime.parse(config["run_at"] ?? "0");
 		if (config.containsKey("service_job_id")) job.serviceJobId = config["service_job_id"];
 		if (config.containsKey("service_name")) job.serviceName = config["service_name"];
 		if (config.containsKey("service_number")) job.serviceNumber = config["service_number"];

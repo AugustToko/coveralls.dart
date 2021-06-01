@@ -4,12 +4,12 @@ part of "../io.dart";
 class Configuration extends Object with MapMixin<String, String> { // ignore: prefer_mixin
 
 	/// Creates a new configuration from the specified [map].
-	Configuration([Map<String, String> map]): _params = map ?? <String, String>{};
+	Configuration([Map<String, String?>? map]): _params = map ?? <String, String?>{};
 
 	/// Creates a new configuration from the specified YAML [document].
 	/// Throws a [FormatException] if the specified document is invalid.
 	Configuration.fromYaml(String document): assert(document.isNotEmpty), _params = <String, String>{} {
-		if (document == null || document.trim().isEmpty) throw const FormatException("The specified YAML document is empty.");
+		if (document.trim().isEmpty) throw const FormatException("The specified YAML document is empty.");
 
 		try {
 			final map = loadYaml(document);
@@ -23,11 +23,11 @@ class Configuration extends Object with MapMixin<String, String> { // ignore: pr
 	}
 
 	/// The coverage parameters.
-	final Map<String, String> _params;
+	final Map<String, String?> _params;
 
 	/// Creates a new configuration from the variables of the specified environment.
 	/// If [env] is not provided, it defaults to `Platform.environment`.
-	static Future<Configuration> fromEnvironment([Map<String, String> env]) async {
+	static Future<Configuration> fromEnvironment([Map<String, String>? env]) async {
 		env ??= Platform.environment;
 		final config = Configuration();
 
@@ -35,14 +35,14 @@ class Configuration extends Object with MapMixin<String, String> { // ignore: pr
 		final serviceName = env["CI_NAME"] ?? "";
 		if (serviceName.isNotEmpty) config["service_name"] = serviceName;
 
-		if (env.containsKey("CI_BRANCH")) config["service_branch"] = env["CI_BRANCH"];
+		if (env.containsKey("CI_BRANCH")) config["service_branch"] = env["CI_BRANCH"]!;
 		if (env.containsKey("CI_BUILD_NUMBER")) config["service_number"] = env["CI_BUILD_NUMBER"];
 		if (env.containsKey("CI_BUILD_URL")) config["service_build_url"] = env["CI_BUILD_URL"];
 		if (env.containsKey("CI_COMMIT")) config["commit_sha"] = env["CI_COMMIT"];
 		if (env.containsKey("CI_JOB_ID")) config["service_job_id"] = env["CI_JOB_ID"];
 
-		if (env.containsKey("CI_PULL_REQUEST")) {
-			final matches = RegExp(r"(\d+)$").allMatches(env["CI_PULL_REQUEST"]);
+		if (env.containsKey("CI_PULL_REQUEST") && env["CI_PULL_REQUEST"] != null) {
+			final matches = RegExp(r"(\d+)$").allMatches(env["CI_PULL_REQUEST"]!);
 			if (matches.isNotEmpty && matches.first.groupCount >= 1) config["service_pull_request"] = matches.first[1];
 		}
 
@@ -139,11 +139,11 @@ class Configuration extends Object with MapMixin<String, String> { // ignore: pr
 
 	/// Returns the value for the given [key] or `null` if [key] is not in this configuration.
 	@override
-	String operator [](Object key) => _params[key];
+	String? operator [](Object? key) => _params[key];
 
 	/// Associates the [key] with the given [value].
 	@override
-	void operator []=(String key, String value) => _params[key] = value;
+	void operator []=(String key, String? value) => _params[key] = value;
 
 	/// Removes all pairs from this configuration.
 	@override
@@ -152,11 +152,11 @@ class Configuration extends Object with MapMixin<String, String> { // ignore: pr
 	/// Adds all entries of the specified configuration to this one, ignoring `null` values.
 	void merge(Configuration config) {
 		for (final entry in config.entries)
-			if (entry.value != null) this[entry.key] = entry.value;
+			this[entry.key] = entry.value;
 	}
 
 	/// Removes the specified [key] and its associated value from this configuration.
 	/// Returns the value associated with [key] before it was removed.
 	@override
-	String remove(Object key) => _params.remove(key);
+	String? remove(Object? key) => _params.remove(key);
 }

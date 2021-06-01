@@ -12,7 +12,7 @@ Configuration getConfiguration(Map<String, String> env) {
 	});
 
 	if (env.containsKey("TRAVIS_PULL_REQUEST") && env["TRAVIS_PULL_REQUEST"] != "false")
-		config["service_pull_request"] = env["TRAVIS_PULL_REQUEST"];
+		config["service_pull_request"] = env["TRAVIS_PULL_REQUEST"]!;
 
 	return config;
 }
